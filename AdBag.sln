@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdBagWeb", "AdBagWeb\AdBagWeb.csproj", "{D2F907A6-A9A2-4B0C-B08C-C2921E806221}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2F907A6-A9A2-4B0C-B08C-C2921E806221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2F907A6-A9A2-4B0C-B08C-C2921E806221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2F907A6-A9A2-4B0C-B08C-C2921E806221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2F907A6-A9A2-4B0C-B08C-C2921E806221}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49B8DA74-81B1-443C-8072-A185A18A6021}
+	EndGlobalSection
+EndGlobal
