@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AdBagWeb.Models
 {
-    public partial class Announcements
+    public partial class Announcement
     {
         public int IdAnnouncement { get; set; }
         public string Title { get; set; }
@@ -13,7 +13,7 @@ namespace AdBagWeb.Models
         public int IdUser { get; set; }
         public int IdCategory { get; set; }
 
-        public Categories IdCategoryNavigation { get; set; }
-        public Users IdUserNavigation { get; set; }
+        public Category IdCategoryNavigation { get; set; }
+        public User IdUserNavigation { get; set; }
     }
 }

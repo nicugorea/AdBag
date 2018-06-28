@@ -15,9 +15,9 @@ namespace AdBagWeb.Models
         {
         }
 
-        public virtual DbSet<Announcements> Announcements { get; set; }
-        public virtual DbSet<Categories> Categories { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Announcement> Announcement { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -30,7 +30,7 @@ namespace AdBagWeb.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Announcements>(entity =>
+            modelBuilder.Entity<Announcement>(entity =>
             {
                 entity.HasKey(e => e.IdAnnouncement);
 
@@ -55,19 +55,19 @@ namespace AdBagWeb.Models
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.IdCategoryNavigation)
-                    .WithMany(p => p.Announcements)
+                    .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.IdCategory)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Announcements_Categories");
 
                 entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.Announcements)
+                    .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Announcements_Users");
             });
 
-            modelBuilder.Entity<Categories>(entity =>
+            modelBuilder.Entity<Category>(entity =>
             {
                 entity.HasKey(e => e.IdCategory);
 
@@ -78,7 +78,7 @@ namespace AdBagWeb.Models
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.IdUser);
 
@@ -113,7 +113,7 @@ namespace AdBagWeb.Models
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithOne(p => p.InverseIdUserNavigation)
-                    .HasForeignKey<Users>(d => d.IdUser)
+                    .HasForeignKey<User>(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Users_Users");
             });

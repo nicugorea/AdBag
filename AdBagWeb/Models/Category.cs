@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace AdBagWeb.Models
 {
-    public partial class Categories
+    public partial class Category
     {
-        public Categories()
+        public Category()
         {
-            Announcements = new HashSet<Announcements>();
+            Announcement = new HashSet<Announcement>();
         }
 
         public int IdCategory { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Announcements> Announcements { get; set; }
+        public ICollection<Announcement> Announcement { get; set; }
     }
 }

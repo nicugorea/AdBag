@@ -21,7 +21,7 @@ namespace AdBagWeb.Controllers
         // GET: Announcements
         public async Task<IActionResult> Index()
         {
-            var adBagWebDBContext = _context.Announcements.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation);
+            var adBagWebDBContext = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation);
             return View(await adBagWebDBContext.ToListAsync());
         }
 
@@ -33,23 +33,23 @@ namespace AdBagWeb.Controllers
                 return NotFound();
             }
 
-            var announcements = await _context.Announcements
+            var announcement = await _context.Announcement
                 .Include(a => a.IdCategoryNavigation)
                 .Include(a => a.IdUserNavigation)
                 .FirstOrDefaultAsync(m => m.IdAnnouncement == id);
-            if (announcements == null)
+            if (announcement == null)
             {
                 return NotFound();
             }
 
-            return View(announcements);
+            return View(announcement);
         }
 
         // GET: Announcements/Create
         public IActionResult Create()
         {
-            ViewData["IdCategory"] = new SelectList(_context.Categories, "IdCategory", "Name");
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email");
+            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name");
+            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email");
             return View();
         }
 
@@ -58,17 +58,17 @@ namespace AdBagWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcements announcements)
+        public async Task<IActionResult> Create([Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcement announcement)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(announcements);
+                _context.Add(announcement);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategory"] = new SelectList(_context.Categories, "IdCategory", "Name", announcements.IdCategory);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", announcements.IdUser);
-            return View(announcements);
+            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.IdCategory);
+            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
+            return View(announcement);
         }
 
         // GET: Announcements/Edit/5
@@ -79,14 +79,14 @@ namespace AdBagWeb.Controllers
                 return NotFound();
             }
 
-            var announcements = await _context.Announcements.FindAsync(id);
-            if (announcements == null)
+            var announcement = await _context.Announcement.FindAsync(id);
+            if (announcement == null)
             {
                 return NotFound();
             }
-            ViewData["IdCategory"] = new SelectList(_context.Categories, "IdCategory", "Name", announcements.IdCategory);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", announcements.IdUser);
-            return View(announcements);
+            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.IdCategory);
+            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
+            return View(announcement);
         }
 
         // POST: Announcements/Edit/5
@@ -94,9 +94,9 @@ namespace AdBagWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcements announcements)
+        public async Task<IActionResult> Edit(int id, [Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcement announcement)
         {
-            if (id != announcements.IdAnnouncement)
+            if (id != announcement.IdAnnouncement)
             {
                 return NotFound();
             }
@@ -105,12 +105,12 @@ namespace AdBagWeb.Controllers
             {
                 try
                 {
-                    _context.Update(announcements);
+                    _context.Update(announcement);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AnnouncementsExists(announcements.IdAnnouncement))
+                    if (!AnnouncementExists(announcement.IdAnnouncement))
                     {
                         return NotFound();
                     }
@@ -121,9 +121,9 @@ namespace AdBagWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategory"] = new SelectList(_context.Categories, "IdCategory", "Name", announcements.IdCategory);
-            ViewData["IdUser"] = new SelectList(_context.Users, "IdUser", "Email", announcements.IdUser);
-            return View(announcements);
+            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.IdCategory);
+            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
+            return View(announcement);
         }
 
         // GET: Announcements/Delete/5
@@ -134,16 +134,16 @@ namespace AdBagWeb.Controllers
                 return NotFound();
             }
 
-            var announcements = await _context.Announcements
+            var announcement = await _context.Announcement
                 .Include(a => a.IdCategoryNavigation)
                 .Include(a => a.IdUserNavigation)
                 .FirstOrDefaultAsync(m => m.IdAnnouncement == id);
-            if (announcements == null)
+            if (announcement == null)
             {
                 return NotFound();
             }
 
-            return View(announcements);
+            return View(announcement);
         }
 
         // POST: Announcements/Delete/5
@@ -151,15 +151,15 @@ namespace AdBagWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var announcements = await _context.Announcements.FindAsync(id);
-            _context.Announcements.Remove(announcements);
+            var announcement = await _context.Announcement.FindAsync(id);
+            _context.Announcement.Remove(announcement);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AnnouncementsExists(int id)
+        private bool AnnouncementExists(int id)
         {
-            return _context.Announcements.Any(e => e.IdAnnouncement == id);
+            return _context.Announcement.Any(e => e.IdAnnouncement == id);
         }
     }
 }

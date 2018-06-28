@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace AdBagWeb.Models
 {
-    public partial class Users
+    public partial class User
     {
-        public Users()
+        public User()
         {
-            Announcements = new HashSet<Announcements>();
+            Announcement = new HashSet<Announcement>();
         }
 
         public int IdUser { get; set; }
@@ -19,8 +19,8 @@ namespace AdBagWeb.Models
         public string PhoneNumber { get; set; }
         public string Role { get; set; }
 
-        public Users IdUserNavigation { get; set; }
-        public Users InverseIdUserNavigation { get; set; }
-        public ICollection<Announcements> Announcements { get; set; }
+        public User IdUserNavigation { get; set; }
+        public User InverseIdUserNavigation { get; set; }
+        public ICollection<Announcement> Announcement { get; set; }
     }
 }
