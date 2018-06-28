@@ -1,0 +1,54 @@
+﻿@model AdBagWeb.Models.Announcements
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Announcements</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UploadDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UploadDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ExpirationDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdCategoryNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdCategoryNavigation.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdUserNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdUserNavigation.Email)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdAnnouncement">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

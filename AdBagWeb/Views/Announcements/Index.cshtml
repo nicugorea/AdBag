@@ -1,0 +1,61 @@
+﻿@model IEnumerable<AdBagWeb.Models.Announcements>
+@using AdBagDictionaries
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">
+                @Properties.AnnouncementTitle
+            </th>
+            <th scope="col">
+                @Properties.AnnouncementDescription
+            </th>
+            <th scope="col">
+                @Properties.AnnouncementUser
+            </th>
+            <th scope="col">
+                @Properties.AnnouncementCategory
+            </th>
+            <th scope="col">
+                @Properties.AnnouncementUploadDate
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-primary">
+                <td scope="row">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdUserNavigation.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCategoryNavigation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UploadDate)
+                </td>
+                <td scope="rowgroup">
+                    @{ // if its curent user ad then it canedit and delete it
+                    }
+                    <a asp-action="Edit" asp-route-id="@item.IdAnnouncement" class="">Edit</a> 
+                    <a asp-action="Details" asp-route-id="@item.IdAnnouncement">Details</a> 
+                    <a asp-action="Delete" asp-route-id="@item.IdAnnouncement">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
