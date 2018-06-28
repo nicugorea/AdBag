@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<AdBagWeb.Models.Category>
-
+@using AdBagDictionaries
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Properties.CategoriesList;
 }
 
-<h2>Index</h2>
+<h2>@Properties.CategoriesList</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Properties.CreateNew</a>
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+               @Properties.CategoryName
             </th>
             <th></th>
         </tr>
@@ -25,9 +25,9 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCategory">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdCategory">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCategory">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IdCategory">@Properties.Edit</a> 
+                <a asp-action="Details" asp-route-id="@item.IdCategory">@Properties.Details</a> 
+                <a asp-action="Delete" asp-route-id="@item.IdCategory">@Properties.Delete</a>
             </td>
         </tr>
 }

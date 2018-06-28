@@ -1,24 +1,36 @@
 ﻿@model AdBagWeb.Models.Category
-
+@using AdBagDictionaries
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Properties.CategoryDetails;
 }
 
-<h2>Details</h2>
+<h3>@Properties.Details</h3>
 
 <div>
-    <h4>Category</h4>
+    <h4>@Properties.Category</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Properties.CategoryID
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdCategory)
+        </dd>
+        <dt>
+            @Properties.CategoryName
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IdCategory">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-sm-1">
+    <a class="btn btn-default" asp-action="Index">@Properties.Back</a>
+    </div>
+
+    <div class="col-sm-1">
+    <a class="btn btn-default" asp-action="Edit" asp-route-id="@Model.IdCategory">@Properties.Edit</a>
+    </div>
+
 </div>

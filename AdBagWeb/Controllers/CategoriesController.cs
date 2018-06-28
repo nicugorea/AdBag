@@ -19,12 +19,16 @@ namespace AdBagWeb.Controllers
         }
 
         // GET: Categories
+        // Admin Only
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            var categoriesList = await _context.Category.ToListAsync();
+            categoriesList.Sort((a, b) => string.Compare(a.Name, b.Name));
+            return View(categoriesList);
         }
 
         // GET: Categories/Details/5
+        // Admin Only
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,14 +47,14 @@ namespace AdBagWeb.Controllers
         }
 
         // GET: Categories/Create
+        // Admin Only
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Admin Only
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCategory,Name")] Category category)
@@ -65,6 +69,7 @@ namespace AdBagWeb.Controllers
         }
 
         // GET: Categories/Edit/5
+        // Admin Only
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,11 +86,10 @@ namespace AdBagWeb.Controllers
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Admin Only
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCategory,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] Category category)
         {
             if (id != category.IdCategory)
             {
@@ -116,6 +120,7 @@ namespace AdBagWeb.Controllers
         }
 
         // GET: Categories/Delete/5
+        // Admin Only
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,6 +139,7 @@ namespace AdBagWeb.Controllers
         }
 
         // POST: Categories/Delete/5
+        // Admin Only
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -133,6 +133,15 @@ namespace AdBagDictionaries {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -153,6 +162,33 @@ namespace AdBagDictionaries {
         /// <summary>
         ///   Looks up a localized string similar to Category.
         /// </summary>
+        public static string Category {
+            get {
+                return ResourceManager.GetString("Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category details.
+        /// </summary>
+        public static string CategoryDetails {
+            get {
+                return ResourceManager.GetString("CategoryDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category Id.
+        /// </summary>
+        public static string CategoryID {
+            get {
+                return ResourceManager.GetString("CategoryID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category name.
+        /// </summary>
         public static string CategoryName {
             get {
                 return ResourceManager.GetString("CategoryName", resourceCulture);
@@ -169,11 +205,47 @@ namespace AdBagDictionaries {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new category.
+        /// </summary>
+        public static string CreateANewCategory {
+            get {
+                return ResourceManager.GetString("CreateANewCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new.
+        /// </summary>
+        public static string CreateNew {
+            get {
+                return ResourceManager.GetString("CreateNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete category.
+        /// </summary>
+        public static string DeleteCategory {
+            get {
+                return ResourceManager.GetString("DeleteCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this ?.
+        /// </summary>
+        public static string DeleteConfirmQuestion {
+            get {
+                return ResourceManager.GetString("DeleteConfirmQuestion", resourceCulture);
             }
         }
         
