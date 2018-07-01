@@ -1,54 +1,82 @@
-﻿@model AdBagWeb.Models.Announcement
+﻿@model AdComment
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<header class="page-header">
+    <div class="container">
+        <h2>@Model.Ad.Title</h2>
 
-<div>
-    <h4>Announcement</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UploadDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UploadDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExpirationDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExpirationDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IdCategoryNavigation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IdCategoryNavigation.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IdUserNavigation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IdUserNavigation.Email)
-        </dd>
-    </dl>
+        <!-- Under title Info -->
+        <div class="row">
+
+            <div class="col-sm-1">
+                <span class="glyphicon glyphicon-user"></span>
+                <a href="#">@Model.Ad.IdUserNavigation.Username</a>
+            </div>
+
+            <div class="col-sm-2">
+                <span class="glyphicon glyphicon-time"></span>
+                <label href="#">@Model.Ad.UploadDate</label>
+            </div>
+
+            <div class="col-sm-2">
+                <label href="#">@Model.Ad.Type</label>
+            </div>
+
+        </div>
+    </div>
+</header>
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-4">
+
+        </div>
+
+        <div class="col-sm-4">
+            <img />
+        </div>
+    </div>
+
+
+    <!-- General Info -->
+    <div class="row">
+
+        <div class="col-xs-6">
+            <label href="#">@Model.Ad.Description</label>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="form-group">
+            <form asp-action="Details">
+                <div class="form-group">
+                <input type="hidden" name="id" value="@Model.Ad.IdAnnouncement"/>
+                    <input type="text" name="comment" value="@Model.Comment" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Post a comment" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+@{ 
+    foreach(Comment item in ViewBag.Comments)
+    {
+        <h4>@item.IdUserNavigation.Username</h4>
+        <p>@item.Text</p>
+        <br />
+    }
+}
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IdAnnouncement">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+

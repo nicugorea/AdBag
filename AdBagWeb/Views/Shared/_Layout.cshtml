@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using AdBagWeb.Classes
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -34,6 +35,21 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Announcements" asp-action="">Ads List</a></li>
                     <li><a asp-area="" asp-controller="Categories" asp-action="">Categories List</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @{
+
+                        if (Authentication.Instance.IsUserLoggedIn())
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="MyAccount">My Account</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                        }
+                    }
                 </ul>
             </div>
         </div>

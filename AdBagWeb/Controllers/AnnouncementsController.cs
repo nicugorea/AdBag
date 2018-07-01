@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AdBagWeb.Models;
+using AdBagWeb.Classes;
 
 namespace AdBagWeb.Controllers
 {
@@ -18,21 +19,17 @@ namespace AdBagWeb.Controllers
             _context = context;
         }
 
-        // GET: Announcements
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var adBagWebDBContext = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation);
-            return View(await adBagWebDBContext.ToListAsync());
+            return RedirectToAction(nameof(List));
         }
 
-        // GET: Announcements/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
             var announcement = await _context.Announcement
                 .Include(a => a.IdCategoryNavigation)
                 .Include(a => a.IdUserNavigation)
@@ -41,11 +38,28 @@ namespace AdBagWeb.Controllers
             {
                 return NotFound();
             }
+            var commentsList = _context.Comment.Include(c => c.IdAnnouncementNavigation).Include(u => u.IdUserNavigation).ToList();
 
-            return View(announcement);
+            ViewBag.Comments = commentsList;
+            var model = new AdComment { Ad = announcement, Comment = "" };
+            return View(model);
         }
 
-        // GET: Announcements/Create
+        [HttpPost]
+        public IActionResult Details(int id, string comment)
+        {
+            Models.Comment dbComment = new Comment();
+            dbComment.IdUser = Authentication.Instance.GetId().Value;
+            dbComment.IdAnnouncement = id;
+            dbComment.PostTime = DateTime.Now;
+            dbComment.Text = comment;
+
+            _context.Add(dbComment);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Details),new { id = id});
+        }
+
         public IActionResult Create()
         {
             ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name");
@@ -53,13 +67,15 @@ namespace AdBagWeb.Controllers
             return View();
         }
 
-        // POST: Announcements/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcement announcement)
+        public async Task<IActionResult> Create([Bind("Title,Description,Type,Image,IdCategory")] Announcement announcement)
         {
+            announcement.UploadDate = DateTime.Now;
+            announcement.ExpirationDate = announcement.UploadDate;
+            announcement.ExpirationDate.AddDays(7);
+            announcement.IdUser = Authentication.Instance.GetId().Value;
+
             if (ModelState.IsValid)
             {
                 _context.Add(announcement);
@@ -69,9 +85,9 @@ namespace AdBagWeb.Controllers
             ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.IdCategory);
             ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
             return View(announcement);
+
         }
 
-        // GET: Announcements/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,9 +105,6 @@ namespace AdBagWeb.Controllers
             return View(announcement);
         }
 
-        // POST: Announcements/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdAnnouncement,Title,Description,UploadDate,ExpirationDate,IdUser,IdCategory")] Announcement announcement)
@@ -126,7 +139,6 @@ namespace AdBagWeb.Controllers
             return View(announcement);
         }
 
-        // GET: Announcements/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,7 +158,6 @@ namespace AdBagWeb.Controllers
             return View(announcement);
         }
 
-        // POST: Announcements/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -161,5 +172,54 @@ namespace AdBagWeb.Controllers
         {
             return _context.Announcement.Any(e => e.IdAnnouncement == id);
         }
+
+
+        public IActionResult List(string sortBy)
+        {
+
+            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortBy) ? "title_desc" : "";
+            ViewBag.DateSortParm = sortBy == "date_asc" ? "date_desc" : "date_asc";
+            ViewBag.CategorySortParm = sortBy == "category_asc" ? "category_desc" : "category_asc";
+            ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
+
+
+            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).ToList();
+
+
+
+
+            switch (sortBy)
+            {
+                case "title_desc":
+                    adList = adList.OrderByDescending(a => a.Title).ToList();
+                    break;
+                case "date_asc":
+                    adList = adList.OrderBy(a => a.UploadDate).ToList();
+                    break;
+                case "date_desc":
+                    adList = adList.OrderByDescending(a => a.UploadDate).ToList();
+                    break;
+                case "category_asc":
+                    adList = adList.OrderBy(a => a.IdCategoryNavigation.Name).ToList();
+                    break;
+                case "category_desc":
+                    adList = adList.OrderByDescending(a => a.IdCategoryNavigation.Name).ToList();
+                    break;
+                case "user_asc":
+                    adList = adList.OrderBy(a => a.IdUserNavigation.Username).ToList();
+                    break;
+                case "user_desc":
+                    adList = adList.OrderByDescending(a => a.IdUserNavigation.Username).ToList();
+                    break;
+                default:  // Name ascending 
+                    adList = adList.OrderBy(a => a.Title).ToList();
+                    break;
+            }
+
+
+            return View(adList);
+        }
+
+
     }
 }

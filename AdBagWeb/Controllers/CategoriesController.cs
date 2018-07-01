@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AdBagWeb.Models;
+using AdBagWeb.Classes;
 
 namespace AdBagWeb.Controllers
 {
@@ -22,6 +23,7 @@ namespace AdBagWeb.Controllers
         // Admin Only
         public async Task<IActionResult> Index()
         {
+            if (Authentication.Instance.IsUserLoggedIn()) ;
             var categoriesList = await _context.Category.ToListAsync();
             categoriesList.Sort((a, b) => string.Compare(a.Name, b.Name));
             return View(categoriesList);

@@ -8,6 +8,7 @@ namespace AdBagWeb.Models
         public User()
         {
             Announcement = new HashSet<Announcement>();
+            Comment = new HashSet<Comment>();
         }
 
         public int IdUser { get; set; }
@@ -22,5 +23,6 @@ namespace AdBagWeb.Models
         public User IdUserNavigation { get; set; }
         public User InverseIdUserNavigation { get; set; }
         public ICollection<Announcement> Announcement { get; set; }
+        public ICollection<Comment> Comment { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace AdBagWeb.Models
 
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -46,9 +47,16 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.IdUser).HasColumnName("ID_User");
 
+                entity.Property(e => e.Image).HasColumnType("image");
+
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UploadDate)
                     .HasColumnName("Upload_Date")
@@ -76,6 +84,35 @@ namespace AdBagWeb.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => e.IdComment);
+
+                entity.Property(e => e.IdComment).HasColumnName("ID_Comment");
+
+                entity.Property(e => e.IdAnnouncement).HasColumnName("ID_Announcement");
+
+                entity.Property(e => e.IdUser).HasColumnName("ID_User");
+
+                entity.Property(e => e.PostTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Text)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.HasOne(d => d.IdAnnouncementNavigation)
+                    .WithMany(p => p.Comment)
+                    .HasForeignKey(d => d.IdAnnouncement)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Comment_Announcement");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                    .WithMany(p => p.Comment)
+                    .HasForeignKey(d => d.IdUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Comment_User");
             });
 
             modelBuilder.Entity<User>(entity =>
