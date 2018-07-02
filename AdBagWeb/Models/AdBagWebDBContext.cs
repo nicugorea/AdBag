@@ -18,6 +18,7 @@ namespace AdBagWeb.Models
         public virtual DbSet<Announcement> Announcement { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
+        public virtual DbSet<ImageFile> ImageFile { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -45,9 +46,9 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.IdCategory).HasColumnName("ID_Category");
 
-                entity.Property(e => e.IdUser).HasColumnName("ID_User");
+                entity.Property(e => e.IdImage).HasColumnName("ID_Image");
 
-                entity.Property(e => e.Image).HasColumnType("image");
+                entity.Property(e => e.IdUser).HasColumnName("ID_User");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
@@ -66,13 +67,18 @@ namespace AdBagWeb.Models
                     .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.IdCategory)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Announcements_Categories");
+                    .HasConstraintName("FK_Announcement_Category");
+
+                entity.HasOne(d => d.IdImageNavigation)
+                    .WithMany(p => p.Announcement)
+                    .HasForeignKey(d => d.IdImage)
+                    .HasConstraintName("FK_Announcement_ImageFile");
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithMany(p => p.Announcement)
                     .HasForeignKey(d => d.IdUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Announcements_Users");
+                    .HasConstraintName("FK_Announcement_User");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -81,9 +87,16 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.IdCategory).HasColumnName("ID_Category");
 
+                entity.Property(e => e.IdImage).HasColumnName("ID_Image");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.IdImageNavigation)
+                    .WithMany(p => p.Category)
+                    .HasForeignKey(d => d.IdImage)
+                    .HasConstraintName("FK_Category_ImageFile");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -115,6 +128,24 @@ namespace AdBagWeb.Models
                     .HasConstraintName("FK_Comment_User");
             });
 
+            modelBuilder.Entity<ImageFile>(entity =>
+            {
+                entity.HasKey(e => e.IdImage);
+
+                entity.Property(e => e.IdImage).HasColumnName("ID_Image");
+
+                entity.Property(e => e.BinaryData).IsRequired();
+
+                entity.Property(e => e.Extension)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.IdUser);
@@ -123,11 +154,11 @@ namespace AdBagWeb.Models
                     .HasColumnName("ID_User")
                     .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.FirstName).HasMaxLength(50);
+
+                entity.Property(e => e.IdImage).HasColumnName("ID_Image");
 
                 entity.Property(e => e.LastName).HasMaxLength(50);
 
@@ -147,6 +178,11 @@ namespace AdBagWeb.Models
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.IdImageNavigation)
+                    .WithMany(p => p.User)
+                    .HasForeignKey(d => d.IdImage)
+                    .HasConstraintName("FK_User_ImageFile");
 
                 entity.HasOne(d => d.IdUserNavigation)
                     .WithOne(p => p.InverseIdUserNavigation)

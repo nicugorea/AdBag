@@ -19,7 +19,9 @@ namespace AdBagWeb.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Role { get; set; }
+        public int? IdImage { get; set; }
 
+        public ImageFile IdImageNavigation { get; set; }
         public User IdUserNavigation { get; set; }
         public User InverseIdUserNavigation { get; set; }
         public ICollection<Announcement> Announcement { get; set; }

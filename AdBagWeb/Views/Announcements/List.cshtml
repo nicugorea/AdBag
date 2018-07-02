@@ -9,79 +9,117 @@
 @{
     if (Authentication.Instance.IsUserLoggedIn())
     {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
     }
 }
+
+
+<!--
+List
 <table class="table" id="mainTable">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Title", "List", new { sortBy = ViewBag.TitleSortParm})
+                @Html.ActionLink("Title", "List", new { sortBy = ViewBag.TitleSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Upload time", "List", new { sortBy = ViewBag.DateSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Category", "List", new { sortBy = ViewBag.CategorySortParm })
+            </th>
+            <th>
+                @Html.ActionLink("User", "List", new { sortBy = ViewBag.UserSortParm })
+            </th>
+            <th>
+
             </th>
             <th>
                 Photo
             </th>
-            <th>
-                @Html.ActionLink("Upload time", "List", new { sortBy = ViewBag.TitleSortParm})
-            </th>
-            <th>
-                @Html.ActionLink("Category", "List", new { sortBy = ViewBag.DateSortParm})
-            </th>
-            <th>
-                @Html.ActionLink("User", "List", new { sortBy = ViewBag.UserSortParm})
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UploadDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCategoryNavigation.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUserNavigation.Username)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.IdAnnouncement">Details</a>
-                @if (Authentication.Instance.IsAdmin())
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UploadDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCategoryNavigation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdUserNavigation.Username)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdAnnouncement">Details</a>
+                    @if (Authentication.Instance.IsAdmin())
                     {
-                <a asp-action="Edit" asp-route-id="@item.IdAnnouncement">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.IdAnnouncement">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.IdAnnouncement">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.IdAnnouncement">Delete</a>
                     }
-            </td>
-        </tr>
+                </td>
+                <td>
+                    @if (item.IdImage != null)
+                    {
+                        var base64 = Convert.ToBase64String(item.IdImageNavigation.BinaryData);
+                        var imgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+                        <img src="@imgSrc" style="max-width:200px;max-height:150px" />
+                    }
+                    else
+                    {
+                        <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+-->
+<!--Grid-->
+
+        <div class="container">
+
+            @{
+                foreach (var item in Model)
+                {
+            <div class="col-md-4">
+                @if (item.IdImage != null)
+                {
+                    var base64 = Convert.ToBase64String(item.IdImageNavigation.BinaryData);
+                    var imgSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+                    <img src="@imgSrc" style="max-width:200px;max-height:150px" />
+                }
+                else
+                {
+                    <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
+                }
+            </div>
+                }
+            }
+
+        </div>
 
 
 <!--Pagination
 <div class="container">
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
     <ul class="pagination">
         <li><a href="#">&laquo;</a></li>
         <li><a href="#">1</a></li>
         <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
         <li><a href="#">5</a></li>
         <li><a href="#">&raquo;</a></li>
 
     </ul>
 </div>
     -->
-
-
-

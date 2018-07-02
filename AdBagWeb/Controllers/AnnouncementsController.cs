@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AdBagWeb.Models;
 using AdBagWeb.Classes;
+using AdBagWeb.ViewModels;
+using System.IO;
 
 namespace AdBagWeb.Controllers
 {
@@ -57,7 +59,7 @@ namespace AdBagWeb.Controllers
             _context.Add(dbComment);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Details),new { id = id});
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         public IActionResult Create()
@@ -69,21 +71,36 @@ namespace AdBagWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Type,Image,IdCategory")] Announcement announcement)
+        public async Task<IActionResult> Create(AnnouncementViewModel announcement)
         {
-            announcement.UploadDate = DateTime.Now;
-            announcement.ExpirationDate = announcement.UploadDate;
-            announcement.ExpirationDate.AddDays(7);
-            announcement.IdUser = Authentication.Instance.GetId().Value;
+            announcement.Ad.UploadDate = DateTime.Now;
+            announcement.Ad.ExpirationDate = announcement.Ad.UploadDate;
+            announcement.Ad.ExpirationDate.AddDays(7);
+            announcement.Ad.IdUser = Authentication.Instance.GetId().Value;
 
             if (ModelState.IsValid)
             {
-                _context.Add(announcement);
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await announcement.Image.CopyToAsync(memoryStream);
+                    var image = new ImageFile();
+                    image.BinaryData = memoryStream.ToArray();
+                    image.Extension = "png";
+                    image.Name = announcement.Ad.IdAnnouncement.ToString() + announcement.Ad.UploadDate.ToString();
+                    _context.Add(image);
+                    _context.SaveChanges();
+                    var img = _context.ImageFile.First(i => i.Name == (announcement.Ad.IdAnnouncement.ToString() + announcement.Ad.UploadDate.ToString()));
+                    announcement.Ad.IdImage = img.IdImage;
+                    _context.Announcement.Add(announcement.Ad);
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.IdCategory);
-            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
+            ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name", announcement.Ad.IdCategory);
+            ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.Ad.IdUser);
+
             return View(announcement);
 
         }
@@ -183,7 +200,7 @@ namespace AdBagWeb.Controllers
             ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
 
 
-            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).ToList();
+            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).Include(a=>a.IdImageNavigation).ToList();
 
 
 

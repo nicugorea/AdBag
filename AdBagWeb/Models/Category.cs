@@ -12,7 +12,9 @@ namespace AdBagWeb.Models
 
         public int IdCategory { get; set; }
         public string Name { get; set; }
+        public int? IdImage { get; set; }
 
+        public ImageFile IdImageNavigation { get; set; }
         public ICollection<Announcement> Announcement { get; set; }
     }
 }

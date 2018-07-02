@@ -1,4 +1,4 @@
-﻿@model AdBagWeb.Models.Announcement
+﻿@model AdBagWeb.ViewModels.AnnouncementViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,36 +10,37 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="Ad.Title" class="control-label"></label>
+                <input asp-for="Ad.Title" class="form-control" />
+                <span asp-validation-for="Ad.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Ad.Description" class="control-label"></label>
+                <input asp-for="Ad.Description" class="form-control" />
+                <span asp-validation-for="Ad.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdCategory" class="control-label"></label>
-                <select asp-for="IdCategory" class ="form-control" asp-items="ViewBag.IdCategory"></select>
+                <label asp-for="Ad.IdCategory" class="control-label"></label>
+                <select asp-for="Ad.IdCategory" class="form-control" asp-items="ViewBag.IdCategory"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control">
+                <label asp-for="Ad.Type" class="control-label"></label>
+                <select asp-for="Ad.Type" class="form-control">
                     <option value="Sell">Sell</option>
                     <option value="Buy">Buy</option>
                     <option value="Exchange">Exchange</option>
                 </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
+                <span asp-validation-for="Ad.Type" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
-                <input type="file" id="imageUpload" asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <input asp-for="Image" type="file" class="form-control" />
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
