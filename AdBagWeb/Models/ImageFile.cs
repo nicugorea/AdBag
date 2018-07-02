@@ -15,7 +15,7 @@ namespace AdBagWeb.Models
         public int IdImage { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
-        public byte[] BinaryData { get; set; }
+        public string Path { get; set; }
 
         public ICollection<Announcement> Announcement { get; set; }
         public ICollection<Category> Category { get; set; }

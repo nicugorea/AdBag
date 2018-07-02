@@ -9,16 +9,19 @@ using AdBagWeb.Models;
 using AdBagWeb.Classes;
 using AdBagWeb.ViewModels;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace AdBagWeb.Controllers
 {
     public class AnnouncementsController : Controller
     {
         private readonly AdBagWebDBContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public AnnouncementsController(AdBagWebDBContext context)
+        public AnnouncementsController(AdBagWebDBContext context,IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -81,19 +84,22 @@ namespace AdBagWeb.Controllers
             if (ModelState.IsValid)
             {
 
-                using (var memoryStream = new MemoryStream())
+
+
+                var image = new ImageFile();
+                image.Extension = Path.GetExtension(announcement.Image.FileName);
+                image.Name = announcement.Ad.IdAnnouncement.ToString() + "_" + announcement.Ad.UploadDate.ToString("yyyy-mm-dd-hh-mm-ss");
+                image.Path = "/ImgUploads/" + image.Name + image.Extension;
+                using (var stream = new FileStream("Uploads/img/" + image.Name + image.Extension, FileMode.Create))
                 {
-                    await announcement.Image.CopyToAsync(memoryStream);
-                    var image = new ImageFile();
-                    image.BinaryData = memoryStream.ToArray();
-                    image.Extension = "png";
-                    image.Name = announcement.Ad.IdAnnouncement.ToString() + announcement.Ad.UploadDate.ToString();
-                    _context.Add(image);
-                    _context.SaveChanges();
-                    var img = _context.ImageFile.First(i => i.Name == (announcement.Ad.IdAnnouncement.ToString() + announcement.Ad.UploadDate.ToString()));
-                    announcement.Ad.IdImage = img.IdImage;
-                    _context.Announcement.Add(announcement.Ad);
+                    
+                    await announcement.Image.CopyToAsync(stream);
                 }
+                _context.Add(image);
+                _context.SaveChanges();
+                var img = _context.ImageFile.First(i => i.Name == image.Name);
+                announcement.Ad.IdImage = img.IdImage;
+                _context.Announcement.Add(announcement.Ad);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -200,7 +206,7 @@ namespace AdBagWeb.Controllers
             ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
 
 
-            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).Include(a=>a.IdImageNavigation).ToList();
+            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).Include(a => a.IdImageNavigation).ToList();
 
 
 

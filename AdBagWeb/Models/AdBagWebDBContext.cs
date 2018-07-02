@@ -134,14 +134,18 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.IdImage).HasColumnName("ID_Image");
 
-                entity.Property(e => e.BinaryData).IsRequired();
-
                 entity.Property(e => e.Extension)
                     .IsRequired()
                     .HasMaxLength(15)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Path)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });

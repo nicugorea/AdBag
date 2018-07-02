@@ -16,7 +16,7 @@
 }
 
 
-<!--
+
 List
 <table class="table" id="mainTable">
     <thead>
@@ -68,9 +68,8 @@ List
                 <td>
                     @if (item.IdImage != null)
                     {
-                        var base64 = Convert.ToBase64String(item.IdImageNavigation.BinaryData);
-                        var imgSrc = String.Format("data:image/jpg;base64,{0}", base64);
 
+                    var imgSrc = item.IdImageNavigation.Path;
                         <img src="@imgSrc" style="max-width:200px;max-height:150px" />
                     }
                     else
@@ -82,20 +81,18 @@ List
         }
     </tbody>
 </table>
--->
+
 <!--Grid-->
 
-        <div class="container">
+<div class="container">
 
-            @{
-                foreach (var item in Model)
-                {
+    @{
+        foreach (var item in Model)
+        {
             <div class="col-md-4">
                 @if (item.IdImage != null)
                 {
-                    var base64 = Convert.ToBase64String(item.IdImageNavigation.BinaryData);
-                    var imgSrc = String.Format("data:image/jpg;base64,{0}", base64);
-
+                    var imgSrc = item.IdImageNavigation.Path;
                     <img src="@imgSrc" style="max-width:200px;max-height:150px" />
                 }
                 else
@@ -103,10 +100,10 @@ List
                     <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
                 }
             </div>
-                }
-            }
+        }
+    }
 
-        </div>
+</div>
 
 
 <!--Pagination

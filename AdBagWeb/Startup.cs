@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AdBagWeb.Models;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace AdBagWeb
 {
@@ -36,6 +38,7 @@ namespace AdBagWeb
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<AdBagWebDBContext>(options => options.UseSqlServer("Server=NICUPC\\LOCALHOST;Database=AdBagWebDB;Trusted_Connection=True;"));
+            services.AddDirectoryBrowser();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +56,12 @@ namespace AdBagWeb
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads","img")),
+                RequestPath = new PathString("/ImgUploads")
+            });
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
