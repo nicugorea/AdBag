@@ -197,7 +197,7 @@ namespace AdBagWeb.Controllers
         }
 
 
-        public IActionResult List(string sortBy)
+        public IActionResult List(string sortBy,string searchBy, string searchValue)
         {
 
             ViewBag.TitleSortParm = String.IsNullOrEmpty(sortBy) ? "title_desc" : "";
@@ -206,7 +206,12 @@ namespace AdBagWeb.Controllers
             ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
 
 
-            var adList = _context.Announcement.Include(a => a.IdCategoryNavigation).Include(a => a.IdUserNavigation).Include(a => a.IdImageNavigation).ToList();
+            var adList = _context.Announcement.
+                Where(a => searchValue==null || a.Title==searchValue).
+                Include(a => a.IdCategoryNavigation).
+                Include(a => a.IdUserNavigation).
+                Include(a => a.IdImageNavigation).
+                ToList();
 
 
 

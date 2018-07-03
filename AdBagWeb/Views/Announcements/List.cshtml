@@ -15,7 +15,15 @@
     }
 }
 
-
+        <form asp-action="List" method="get">
+            <div class="form-actions no-color">
+                <p>
+                    Find by name:
+                    <input type="text" name="searchValue" />
+                    <input type="submit" value="Search" class="btn btn-default" />
+                </p>
+            </div>
+        </form>
 
 List
 <table class="table" id="mainTable">
@@ -84,7 +92,7 @@ List
 
 <!--Grid-->
 
-<div class="container">
+@*<div class="container">
 
     @{
         foreach (var item in Model)
@@ -103,7 +111,7 @@ List
         }
     }
 
-</div>
+</div>*@
 
 
 <!--Pagination

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdBagWeb", "AdBagWeb\AdBagWeb.csproj", "{D2F907A6-A9A2-4B0C-B08C-C2921E806221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdBagDictionaries", "AdBagDictionaries\AdBagDictionaries.csproj", "{7180B176-8580-4494-A5B2-1869CA5A1AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdBagDictionaries", "AdBagDictionaries\AdBagDictionaries.csproj", "{7180B176-8580-4494-A5B2-1869CA5A1AEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
