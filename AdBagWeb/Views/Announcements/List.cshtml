@@ -11,20 +11,44 @@
         <div class="form-actions no-color">
             <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
             <h4>Find by:</h4>
-            <p>
-                Name
-                @Html.RadioButton("searchBy", "name", true)
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row form-group">
 
-                Category
-                @Html.RadioButton("searchBy", "category", false)
+                        Name
+                        @Html.RadioButton("searchBy", "name", true)
 
-                User
-                @Html.RadioButton("searchBy", "user", false)
-            </p>
-            <p>
-                <input type="text" name="searchValue" />
-                <input type="submit" value="Search" class="btn btn-default" />
-            </p>
+                        Category
+                        @Html.RadioButton("searchBy", "category", false)
+
+                        User
+                        @Html.RadioButton("searchBy", "user", false)
+                    </div>
+                    <div class="row form-group">
+                        <input type="text" name="searchValue" />
+                        <input type="submit" value="Search" class="btn btn-default" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <h6>Category</h6>
+                        <select class="form-control" id="category" name="category">
+                            @if (!String.IsNullOrEmpty(ViewBag.Category))
+                            {
+                                <option>@(ViewBag.Category)</option>
+                            }
+                            @if (ViewBag.Category != "All")
+                            {
+                                <option>All</option>
+                            }
+                            @foreach (Category item in ViewBag.Categories)
+                            {
+                                <option>@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </header>
@@ -33,7 +57,7 @@
     if (Authentication.Instance.IsUserLoggedIn())
     {
         <p>
-            <a class="btn btn-primary" asp-action="Create">Create New</a>
+            <a class="btn btn-primary" asp-action="Create">Add a add</a>
         </p>
     }
 }
@@ -42,16 +66,44 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Title", "List", new { sortBy = ViewBag.TitleSortParm, searchBy=ViewBag.SearchBy, searchValue=ViewBag.SearchValue })
+                @Html.ActionLink("Title", "List", new
+                    {
+                        sortBy = ViewBag.TitleSortParm,
+                        searchBy = ViewBag.SearchBy,
+                        searchValue = ViewBag.SearchValue,
+                        category = ViewBag.Category
+                    })
+
             </th>
             <th>
-                @Html.ActionLink("Upload time", "List", new { sortBy = ViewBag.DateSortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
+                @Html.ActionLink("Upload time", "List", new
+                    {
+                        sortBy = ViewBag.DateSortParm,
+                        searchBy = ViewBag.SearchBy,
+                        searchValue = ViewBag.SearchValue,
+                        category = ViewBag.Category
+                    })
+
             </th>
             <th>
-                @Html.ActionLink("Category", "List", new { sortBy = ViewBag.CategorySortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
+                @Html.ActionLink("Category", "List", new
+                    {
+                        sortBy = ViewBag.CategorySortParm,
+                        searchBy = ViewBag.SearchBy,
+                        searchValue = ViewBag.SearchValue,
+                        category = ViewBag.Category
+                    })
+
             </th>
             <th>
-                @Html.ActionLink("User", "List", new { sortBy = ViewBag.UserSortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
+                @Html.ActionLink("User", "List", new
+                    {
+                        sortBy = ViewBag.UserSortParm,
+                        searchBy = ViewBag.SearchBy,
+                        searchValue = ViewBag.SearchValue,
+                        category = ViewBag.Category
+                    })
+
             </th>
             <th>
 

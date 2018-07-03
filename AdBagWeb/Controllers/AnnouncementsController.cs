@@ -197,29 +197,28 @@ namespace AdBagWeb.Controllers
         }
 
 
-        public IActionResult List(string sortBy, string searchBy, string searchValue)
+        public IActionResult List(string sortBy, string searchBy, string searchValue, string category)
         {
+            ViewBag.Categories = _context.Category.ToList();
+
 
             ViewBag.SortBy = sortBy;
             ViewBag.SearchBy = searchBy;
             ViewBag.SearchValue = searchValue;
+            ViewBag.Category = category;
 
             ViewBag.TitleSortParm = String.IsNullOrEmpty(sortBy) ? "title_desc" : "title_asc";
             ViewBag.DateSortParm = sortBy == "date_asc" ? "date_desc" : "date_asc";
             ViewBag.CategorySortParm = sortBy == "category_asc" ? "category_desc" : "category_asc";
             ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
 
+
+
+
             var adList = new List<Announcement>();
+
             switch (searchBy)
             {
-                case "category":
-                    adList = _context.Announcement.
-                    Where(a => searchValue == null || a.IdCategoryNavigation.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).
-                    Include(a => a.IdCategoryNavigation).
-                    Include(a => a.IdUserNavigation).
-                    Include(a => a.IdImageNavigation).
-                    ToList();
-                    break;
                 case "user":
                     adList = _context.Announcement.
                     Where(a => searchValue == null || a.IdUserNavigation.Username.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).
@@ -237,9 +236,6 @@ namespace AdBagWeb.Controllers
                     ToList();
                     break;
             }
-
-
-
 
             switch (sortBy)
             {
@@ -269,6 +265,14 @@ namespace AdBagWeb.Controllers
                     break;
             }
 
+            if (!String.IsNullOrEmpty(category) && category != "All")
+            {
+                adList = adList.Where(a => a.IdCategoryNavigation.Name == category).ToList();
+                var toDelete = (ViewBag.Categories as List<Category>).First(c => c.Name == ViewBag.Category as string);
+                if (toDelete != null)
+                    (ViewBag.Categories as List<Category>).Remove(toDelete);
+
+            }
 
             return View(adList);
         }
