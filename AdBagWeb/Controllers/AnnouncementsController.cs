@@ -18,7 +18,7 @@ namespace AdBagWeb.Controllers
         private readonly AdBagWebDBContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public AnnouncementsController(AdBagWebDBContext context,IHostingEnvironment hostingEnvironment)
+        public AnnouncementsController(AdBagWebDBContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
@@ -92,7 +92,7 @@ namespace AdBagWeb.Controllers
                 image.Path = "/ImgUploads/" + image.Name + image.Extension;
                 using (var stream = new FileStream("Uploads/img/" + image.Name + image.Extension, FileMode.Create))
                 {
-                    
+
                     await announcement.Image.CopyToAsync(stream);
                 }
                 _context.Add(image);
@@ -197,21 +197,46 @@ namespace AdBagWeb.Controllers
         }
 
 
-        public IActionResult List(string sortBy,string searchBy, string searchValue)
+        public IActionResult List(string sortBy, string searchBy, string searchValue)
         {
 
-            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortBy) ? "title_desc" : "";
+            ViewBag.SortBy = sortBy;
+            ViewBag.SearchBy = searchBy;
+            ViewBag.SearchValue = searchValue;
+
+            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortBy) ? "title_desc" : "title_asc";
             ViewBag.DateSortParm = sortBy == "date_asc" ? "date_desc" : "date_asc";
             ViewBag.CategorySortParm = sortBy == "category_asc" ? "category_desc" : "category_asc";
             ViewBag.UserSortParm = sortBy == "user_asc" ? "user_desc" : "user_asc";
 
-
-            var adList = _context.Announcement.
-                Where(a => searchValue==null || a.Title==searchValue).
-                Include(a => a.IdCategoryNavigation).
-                Include(a => a.IdUserNavigation).
-                Include(a => a.IdImageNavigation).
-                ToList();
+            var adList = new List<Announcement>();
+            switch (searchBy)
+            {
+                case "category":
+                    adList = _context.Announcement.
+                    Where(a => searchValue == null || a.IdCategoryNavigation.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).
+                    Include(a => a.IdCategoryNavigation).
+                    Include(a => a.IdUserNavigation).
+                    Include(a => a.IdImageNavigation).
+                    ToList();
+                    break;
+                case "user":
+                    adList = _context.Announcement.
+                    Where(a => searchValue == null || a.IdUserNavigation.Username.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).
+                    Include(a => a.IdCategoryNavigation).
+                    Include(a => a.IdUserNavigation).
+                    Include(a => a.IdImageNavigation).
+                    ToList();
+                    break;
+                default:
+                    adList = _context.Announcement.
+                    Where(a => searchValue == null || a.Title.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).
+                    Include(a => a.IdCategoryNavigation).
+                    Include(a => a.IdUserNavigation).
+                    Include(a => a.IdImageNavigation).
+                    ToList();
+                    break;
+            }
 
 
 
@@ -239,7 +264,7 @@ namespace AdBagWeb.Controllers
                 case "user_desc":
                     adList = adList.OrderByDescending(a => a.IdUserNavigation.Username).ToList();
                     break;
-                default:  // Name ascending 
+                default:
                     adList = adList.OrderBy(a => a.Title).ToList();
                     break;
             }

@@ -5,41 +5,53 @@
     ViewData["Title"] = "List";
 }
 
-<h2>Index</h2>
+<header class="page-header">
+
+    <form asp-action="List" method="get">
+        <div class="form-actions no-color">
+            <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
+            <h4>Find by:</h4>
+            <p>
+                Name
+                @Html.RadioButton("searchBy", "name", true)
+
+                Category
+                @Html.RadioButton("searchBy", "category", false)
+
+                User
+                @Html.RadioButton("searchBy", "user", false)
+            </p>
+            <p>
+                <input type="text" name="searchValue" />
+                <input type="submit" value="Search" class="btn btn-default" />
+            </p>
+        </div>
+    </form>
+</header>
+
 @{
     if (Authentication.Instance.IsUserLoggedIn())
     {
         <p>
-            <a asp-action="Create">Create New</a>
+            <a class="btn btn-primary" asp-action="Create">Create New</a>
         </p>
     }
 }
-
-        <form asp-action="List" method="get">
-            <div class="form-actions no-color">
-                <p>
-                    Find by name:
-                    <input type="text" name="searchValue" />
-                    <input type="submit" value="Search" class="btn btn-default" />
-                </p>
-            </div>
-        </form>
-
-List
+<!--List-->
 <table class="table" id="mainTable">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Title", "List", new { sortBy = ViewBag.TitleSortParm })
+                @Html.ActionLink("Title", "List", new { sortBy = ViewBag.TitleSortParm, searchBy=ViewBag.SearchBy, searchValue=ViewBag.SearchValue })
             </th>
             <th>
-                @Html.ActionLink("Upload time", "List", new { sortBy = ViewBag.DateSortParm })
+                @Html.ActionLink("Upload time", "List", new { sortBy = ViewBag.DateSortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
             </th>
             <th>
-                @Html.ActionLink("Category", "List", new { sortBy = ViewBag.CategorySortParm })
+                @Html.ActionLink("Category", "List", new { sortBy = ViewBag.CategorySortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
             </th>
             <th>
-                @Html.ActionLink("User", "List", new { sortBy = ViewBag.UserSortParm })
+                @Html.ActionLink("User", "List", new { sortBy = ViewBag.UserSortParm, searchBy = ViewBag.SearchBy, searchValue = ViewBag.SearchValue })
             </th>
             <th>
 
@@ -77,7 +89,7 @@ List
                     @if (item.IdImage != null)
                     {
 
-                    var imgSrc = item.IdImageNavigation.Path;
+                        var imgSrc = item.IdImageNavigation.Path;
                         <img src="@imgSrc" style="max-width:200px;max-height:150px" />
                     }
                     else
@@ -91,27 +103,26 @@ List
 </table>
 
 <!--Grid-->
-
 @*<div class="container">
 
-    @{
-        foreach (var item in Model)
-        {
-            <div class="col-md-4">
-                @if (item.IdImage != null)
-                {
-                    var imgSrc = item.IdImageNavigation.Path;
-                    <img src="@imgSrc" style="max-width:200px;max-height:150px" />
-                }
-                else
-                {
-                    <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
-                }
-            </div>
+        @{
+            foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    @if (item.IdImage != null)
+                    {
+                        var imgSrc = item.IdImageNavigation.Path;
+                        <img src="@imgSrc" style="max-width:200px;max-height:150px" />
+                    }
+                    else
+                    {
+                        <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
+                    }
+                </div>
+            }
         }
-    }
 
-</div>*@
+    </div>*@
 
 
 <!--Pagination
