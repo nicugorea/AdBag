@@ -39,10 +39,12 @@ namespace AdBagWeb.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
-            if (ModelState.IsValid)
+            if (user!=null && !string.IsNullOrEmpty(user.Password) && !string.IsNullOrEmpty(user.Username))
             {
+                user.Role = "user";
+                user.Password = Authentication.ComputeSha256Hash(user.Password);
                 _context.Add(user);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -60,14 +62,15 @@ namespace AdBagWeb.Controllers
         public IActionResult Login(User user)
         {
             if (ModelState.IsValid)
-            {
+            {  
                 try
                 {
 
-                    var dbUser = _context.User.First(u => u.Username == user.Username);
+                   var dbUser = _context.User.First(u => u.Username == user.Username);
                     if (dbUser == null)
                         return View(user);
-                    if (dbUser.Password != user.Password)
+                    var localPass = Authentication.ComputeSha256Hash(user.Password);
+                    if (dbUser.Password != localPass)
                         return View(user);
                     Authentication.Instance.Login(dbUser);
                 }

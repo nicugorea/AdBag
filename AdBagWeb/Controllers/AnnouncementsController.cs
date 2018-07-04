@@ -15,56 +15,17 @@ namespace AdBagWeb.Controllers
 {
     public class AnnouncementsController : Controller
     {
+        #region Properties
         private readonly AdBagWebDBContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
-
-        public AnnouncementsController(AdBagWebDBContext context, IHostingEnvironment hostingEnvironment)
-        {
-            _context = context;
-            _hostingEnvironment = hostingEnvironment;
-        }
+        #endregion
 
         public IActionResult Index()
         {
             return RedirectToAction(nameof(List));
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var announcement = await _context.Announcement
-                .Include(a => a.IdCategoryNavigation)
-                .Include(a => a.IdUserNavigation)
-                .FirstOrDefaultAsync(m => m.IdAnnouncement == id);
-            if (announcement == null)
-            {
-                return NotFound();
-            }
-            var commentsList = _context.Comment.Include(c => c.IdAnnouncementNavigation).Include(u => u.IdUserNavigation).ToList();
-
-            ViewBag.Comments = commentsList;
-            var model = new AdComment { Ad = announcement, Comment = "" };
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult Details(int id, string comment)
-        {
-            Models.Comment dbComment = new Comment();
-            dbComment.IdUser = Authentication.Instance.GetId().Value;
-            dbComment.IdAnnouncement = id;
-            dbComment.PostTime = DateTime.Now;
-            dbComment.Text = comment;
-
-            _context.Add(dbComment);
-            _context.SaveChanges();
-
-            return RedirectToAction(nameof(Details), new { id = id });
-        }
-
+        #region Create
         public IActionResult Create()
         {
             ViewData["IdCategory"] = new SelectList(_context.Category, "IdCategory", "Name");
@@ -110,7 +71,60 @@ namespace AdBagWeb.Controllers
             return View(announcement);
 
         }
+        #endregion
 
+        #region Constructor
+        public AnnouncementsController(AdBagWebDBContext context, IHostingEnvironment hostingEnvironment)
+        {
+            _context = context;
+            _hostingEnvironment = hostingEnvironment;
+        }
+        #endregion
+
+
+        #region Details
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var announcement = await _context.Announcement
+                .Include(a => a.IdCategoryNavigation)
+                .Include(a => a.IdUserNavigation)
+                .Include(a => a.IdImageNavigation)
+                .FirstOrDefaultAsync(m => m.IdAnnouncement == id);
+            if (announcement == null)
+            {
+                return NotFound();
+            }
+            var commentsList = _context.Comment.
+                Include(c => c.IdAnnouncementNavigation).
+                Include(u => u.IdUserNavigation).
+                Where(c=>c.IdAnnouncement==id).
+                ToList();
+
+            ViewBag.Comments = commentsList;
+            return View(announcement);
+        }
+
+        [HttpPost]
+        public IActionResult Details(int id, string comment)
+        {
+            Models.Comment dbComment = new Comment();
+            dbComment.IdUser = Authentication.Instance.GetId().Value;
+            dbComment.IdAnnouncement = id;
+            dbComment.PostTime = DateTime.Now;
+            dbComment.Text = comment;
+
+            _context.Add(dbComment);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+        #endregion
+
+
+        #region Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -161,7 +175,9 @@ namespace AdBagWeb.Controllers
             ViewData["IdUser"] = new SelectList(_context.User, "IdUser", "Email", announcement.IdUser);
             return View(announcement);
         }
+        #endregion
 
+        #region Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -186,17 +202,22 @@ namespace AdBagWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var announcement = await _context.Announcement.FindAsync(id);
+
+            var comments = _context.Comment.Where(c => c.IdAnnouncement == id).ToList();
+
+            foreach (var item in comments)
+            {
+                _context.Remove(item);
+            }
+            await _context.SaveChangesAsync();
+
             _context.Announcement.Remove(announcement);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
-        private bool AnnouncementExists(int id)
-        {
-            return _context.Announcement.Any(e => e.IdAnnouncement == id);
-        }
-
-
+        #region List
         public IActionResult List(string sortBy, string searchBy, string searchValue, string category)
         {
             ViewBag.Categories = _context.Category.ToList();
@@ -276,6 +297,14 @@ namespace AdBagWeb.Controllers
 
             return View(adList);
         }
+        #endregion
+
+        #region PrivateMethods
+        private bool AnnouncementExists(int id)
+        {
+            return _context.Announcement.Any(e => e.IdAnnouncement == id);
+        }
+        #endregion
 
 
     }
