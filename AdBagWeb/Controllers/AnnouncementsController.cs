@@ -20,10 +20,12 @@ namespace AdBagWeb.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         #endregion
 
+        #region Index
         public IActionResult Index()
         {
             return RedirectToAction(nameof(List));
         }
+        #endregion
 
         #region Create
         public IActionResult Create()
@@ -44,22 +46,23 @@ namespace AdBagWeb.Controllers
 
             if (ModelState.IsValid)
             {
-
-
-
-                var image = new ImageFile();
-                image.Extension = Path.GetExtension(announcement.Image.FileName);
-                image.Name = announcement.Ad.IdAnnouncement.ToString() + "_" + announcement.Ad.UploadDate.ToString("yyyy-mm-dd-hh-mm-ss");
-                image.Path = "/ImgUploads/" + image.Name + image.Extension;
-                using (var stream = new FileStream("Uploads/img/" + image.Name + image.Extension, FileMode.Create))
+                if (announcement.Image != null)
                 {
 
-                    await announcement.Image.CopyToAsync(stream);
+                    var image = new ImageFile();
+                    image.Extension = Path.GetExtension(announcement.Image.FileName);
+                    image.Name = announcement.Ad.IdAnnouncement.ToString() + "_" + announcement.Ad.UploadDate.ToString("yyyy-mm-dd-hh-mm-ss");
+                    image.Path = "/ImgUploads/" + image.Name + image.Extension;
+                    using (var stream = new FileStream("Uploads/img/" + image.Name + image.Extension, FileMode.Create))
+                    {
+
+                        await announcement.Image.CopyToAsync(stream);
+                    }
+                    _context.Add(image);
+                    _context.SaveChanges();
+                    var img = _context.ImageFile.First(i => i.Name == image.Name);
+                    announcement.Ad.IdImage = img.IdImage;
                 }
-                _context.Add(image);
-                _context.SaveChanges();
-                var img = _context.ImageFile.First(i => i.Name == image.Name);
-                announcement.Ad.IdImage = img.IdImage;
                 _context.Announcement.Add(announcement.Ad);
 
                 await _context.SaveChangesAsync();
@@ -81,7 +84,6 @@ namespace AdBagWeb.Controllers
         }
         #endregion
 
-
         #region Details
         public async Task<IActionResult> Details(int? id)
         {
@@ -101,7 +103,7 @@ namespace AdBagWeb.Controllers
             var commentsList = _context.Comment.
                 Include(c => c.IdAnnouncementNavigation).
                 Include(u => u.IdUserNavigation).
-                Where(c=>c.IdAnnouncement==id).
+                Where(c => c.IdAnnouncement == id).
                 ToList();
 
             ViewBag.Comments = commentsList;
@@ -122,7 +124,6 @@ namespace AdBagWeb.Controllers
             return RedirectToAction(nameof(Details), new { id = id });
         }
         #endregion
-
 
         #region Edit
         public async Task<IActionResult> Edit(int? id)
@@ -209,7 +210,12 @@ namespace AdBagWeb.Controllers
             {
                 _context.Remove(item);
             }
+            if (announcement.IdImage != null)
+                _context.Remove(_context.ImageFile.Find(announcement.IdImageNavigation.IdImage));
+
             await _context.SaveChangesAsync();
+
+
 
             _context.Announcement.Remove(announcement);
             await _context.SaveChangesAsync();

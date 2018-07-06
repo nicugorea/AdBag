@@ -10,184 +10,130 @@
     <form asp-action="List" method="get">
         <div class="form-actions no-color">
             <input type="hidden" name="sortBy" value="@ViewBag.SortBy" />
-            <div class="row">
+            <div class="list-group list-inline">
                 <h4>Find by:</h4>
+                Name
+                @Html.RadioButton("searchBy", "name", true)
+                User
+                @Html.RadioButton("searchBy", "user", false)
+            </div>
+            <div class="row">
                 <div class="col-md-4">
-                    <div class="row form-group">
-
-                        Name
-                        @Html.RadioButton("searchBy", "name", true)
-                    </div>
-                    <div class="row">
-                        User
-                        @Html.RadioButton("searchBy", "user", false)
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="searchValue" value="@ViewBag.SearchValue" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Search</button>
+                        </span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group">
-                        <div class="col-md-4">
-
-                            <input type="text" value="@ViewBag.SearchValue" name="searchValue" />
-                            <input type="submit" value="Search" class="btn btn-default" />
+                <div class="input-group col-md-4">
+                    <select class="" id="category" name="category">
+                        @if (!String.IsNullOrEmpty(ViewBag.Category))
+                        {
+                            <option>@(ViewBag.Category)</option>
+                        }
+                        @if (ViewBag.Category != "All")
+                        {
+                            <option>All</option>
+                        }
+                        @foreach (Category item in ViewBag.Categories)
+                        {
+                            <option>@item.Name</option>
+                        }
+                    </select>
+                </div>
+                @{
+                    if (Authentication.Instance.IsUserLoggedIn())
+                    {
+                        <div class="col-md-3">
+                            <a class="btn btn-default" asp-action="Create"> Create</a>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <select class="col-md-4" id="category" name="category">
-                            @if (!String.IsNullOrEmpty(ViewBag.Category))
-                            {
-                                <option>@(ViewBag.Category)</option>
-                            }
-                            @if (ViewBag.Category != "All")
-                            {
-                                <option>All</option>
-                            }
-                            @foreach (Category item in ViewBag.Categories)
-                            {
-                                <option>@item.Name</option>
-                            }
-                        </select>
-                    </div>
-                </div>
+                    }
+                }
             </div>
         </div>
     </form>
 </header>
 
-@{
-    if (Authentication.Instance.IsUserLoggedIn())
-    {
-        <p>
-            <a class="btn btn-primary" asp-action="Create">Add a add</a>
-        </p>
-    }
-}
-<!--List-->
-<table class="table" id="mainTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.ActionLink("Title", "List", new
-                    {
-                        sortBy = ViewBag.TitleSortParm,
-                        searchBy = ViewBag.SearchBy,
-                        searchValue = ViewBag.SearchValue,
-                        category = ViewBag.Category
-                    })
-
-            </th>
-            <th>
-                @Html.ActionLink("Upload time", "List", new
-                    {
-                        sortBy = ViewBag.DateSortParm,
-                        searchBy = ViewBag.SearchBy,
-                        searchValue = ViewBag.SearchValue,
-                        category = ViewBag.Category
-                    })
-
-            </th>
-            <th>
-                @Html.ActionLink("Category", "List", new
-                    {
-                        sortBy = ViewBag.CategorySortParm,
-                        searchBy = ViewBag.SearchBy,
-                        searchValue = ViewBag.SearchValue,
-                        category = ViewBag.Category
-                    })
-
-            </th>
-            <th>
-                @Html.ActionLink("User", "List", new
-                    {
-                        sortBy = ViewBag.UserSortParm,
-                        searchBy = ViewBag.SearchBy,
-                        searchValue = ViewBag.SearchValue,
-                        category = ViewBag.Category
-                    })
-
-            </th>
-            <th>
-
-            </th>
-            <th>
-                Photo
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UploadDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdCategoryNavigation.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdUserNavigation.Username)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.IdAnnouncement">Details</a>
-                    @if (Authentication.Instance.IsAdmin())
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.IdAnnouncement">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.IdAnnouncement">Delete</a>
-                    }
-                </td>
-                <td>
-                    @if (item.IdImage != null)
-                    {
-
-                        var imgSrc = item.IdImageNavigation.Path;
-                        <img src="@imgSrc" style="max-width:200px;max-height:150px" />
-                    }
-                    else
-                    {
-                        <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 <!--Grid-->
-@*<div class="container">
+<div class="container">
 
-        @{
-            foreach (var item in Model)
+    @{
+        int count = 0;
+        foreach (var item in Model)
+        {
+            if (count % 3 == 0)
             {
-                <div class="col-md-4">
+                @Html.Raw("<div class=\"row\">");
+            }
+            <div class="col-md-4">
+                <a href="Details/?id=@item.IdAnnouncement" style="text-decoration:none" class="thumbnail">
+
                     @if (item.IdImage != null)
                     {
                         var imgSrc = item.IdImageNavigation.Path;
-                        <img src="@imgSrc" style="max-width:200px;max-height:150px" />
+                        <img src="@imgSrc" class="img-responsive" />
                     }
                     else
                     {
-                        <img src="~/images/image-not-found.jpg" style="max-width:200px;max-height:150px" />
+                        <img src="~/images/image-not-found.jpg" class="img-responsive" />
                     }
-                </div>
+
+                    <div class="caption">
+
+                        @if (item.Title.Length > 22)
+                        {
+                            <h4>
+                                @item.Title.Substring(0, 20)
+                                ...
+                            </h4>
+                        }
+                        else
+                        {
+                            <h4>
+                                @item.Title
+                            </h4>
+                        }
+
+                        <i class="glyphicon glyphicon-user"></i>
+                        @if (item.IdUserNavigation.Username.Length > 22)
+                        {
+                            @item.IdUserNavigation.Username.Substring(0, 20)
+                            <text>...</text>
+                        }
+                        else
+                        {
+                            @item.IdUserNavigation.Username
+                        }
+
+                        @if (!String.IsNullOrEmpty(item.Curency) && item.Price != null)
+                        {
+                            <label class="label label-success">
+                                @item.Price @item.Curency
+                            </label>
+                        }
+
+                        @if (item.Description.Length > 100)
+                        {
+                            <p>
+                                @item.Description.Substring(0, 100)
+                                ...
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                @item.Description
+                            </p>
+                        }
+                    </div>
+                </a>
+            </div>
+            if (count % 3 == 2)
+            {
+                @Html.Raw("</div>");
             }
+            count++;
         }
-
-    </div>*@
-
-
-<!--Pagination
-<div class="container">
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-    <ul class="pagination">
-        <li><a href="#">&laquo;</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
-
-    </ul>
+    }
 </div>
-    -->

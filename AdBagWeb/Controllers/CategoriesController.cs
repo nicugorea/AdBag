@@ -19,20 +19,17 @@ namespace AdBagWeb.Controllers
             _context = context;
         }
 
-        // GET: Categories
-        // Admin Only
         public async Task<IActionResult> Index()
         {
-            if (Authentication.Instance.IsUserLoggedIn()) ;
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             var categoriesList = await _context.Category.ToListAsync();
             categoriesList.Sort((a, b) => string.Compare(a.Name, b.Name));
             return View(categoriesList);
         }
 
-        // GET: Categories/Details/5
-        // Admin Only
         public async Task<IActionResult> Details(int? id)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             if (id == null)
             {
                 return NotFound();
@@ -48,19 +45,17 @@ namespace AdBagWeb.Controllers
             return View(category);
         }
 
-        // GET: Categories/Create
-        // Admin Only
         public IActionResult Create()
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             return View();
         }
 
-        // POST: Categories/Create
-        // Admin Only
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCategory,Name")] Category category)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             if (ModelState.IsValid)
             {
                 _context.Add(category);
@@ -70,10 +65,9 @@ namespace AdBagWeb.Controllers
             return View(category);
         }
 
-        // GET: Categories/Edit/5
-        // Admin Only
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             if (id == null)
             {
                 return NotFound();
@@ -87,12 +81,11 @@ namespace AdBagWeb.Controllers
             return View(category);
         }
 
-        // POST: Categories/Edit/5
-        // Admin Only
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Name")] Category category)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             if (id != category.IdCategory)
             {
                 return NotFound();
@@ -121,10 +114,9 @@ namespace AdBagWeb.Controllers
             return View(category);
         }
 
-        // GET: Categories/Delete/5
-        // Admin Only
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             if (id == null)
             {
                 return NotFound();
@@ -140,12 +132,11 @@ namespace AdBagWeb.Controllers
             return View(category);
         }
 
-        // POST: Categories/Delete/5
-        // Admin Only
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!Authentication.Instance.IsAdmin()) return Redirect("~/Home");
             var category = await _context.Category.FindAsync(id);
             _context.Category.Remove(category);
             await _context.SaveChangesAsync();

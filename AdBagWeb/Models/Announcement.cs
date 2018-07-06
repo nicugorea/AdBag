@@ -19,6 +19,8 @@ namespace AdBagWeb.Models
         public int IdCategory { get; set; }
         public string Type { get; set; }
         public int? IdImage { get; set; }
+        public decimal? Price { get; set; }
+        public string Curency { get; set; }
 
         public Category IdCategoryNavigation { get; set; }
         public ImageFile IdImageNavigation { get; set; }

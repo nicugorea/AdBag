@@ -38,6 +38,8 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.IdAnnouncement).HasColumnName("ID_Announcement");
 
+                entity.Property(e => e.Curency).HasMaxLength(20);
+
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ExpirationDate)
@@ -49,6 +51,8 @@ namespace AdBagWeb.Models
                 entity.Property(e => e.IdImage).HasColumnName("ID_Image");
 
                 entity.Property(e => e.IdUser).HasColumnName("ID_User");
+
+                entity.Property(e => e.Price).HasColumnType("money");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
@@ -168,7 +172,7 @@ namespace AdBagWeb.Models
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(256);
 
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(50)
